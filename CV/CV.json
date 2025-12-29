@@ -4,36 +4,81 @@
     "Mail": "romaric.barbaud@gmail.com",
     "Numero": "0760102004",
     "Adress": "Rue du Temple, Sartrouville 78500",
-    "Intro": "Bla Bla Bla",
+    "Intro": "Étudiant en 4eme année école d’ingénieur, passionné par la cybersécurité, je recherche un stage de 5 mois à partir d’avril 2026 afin de développer mes compétences en sécurité réseau, tests d’intrusion et protection des systèmes.",
     "Competences": ["Esprit d’équipe", "Capacité d’adaptation", "Curieux", "Ouvert d’esprit", "Autonome", "Ponctuel"],
-    "Langages_Technique": [],
-    "Outils_Technique": [],
+    "Langages_Technique": ["C", "JavaScript", "Python", "PHP", "Java"],
+    "Outils_Technique": ["Linux", "Git", "SQL", "React", "VirtualBox", "Cisco Packet Tracer"],
     "Langues": [
         {
             "Nom": "Anglais", 
             "Niveau": "TOEIC: 825"
         },
         {
-            "Nom": "Anglais", 
-            "Niveau": "TOEIC: 825"
+            "Nom": "Espagnol", 
+            "Niveau": "Scolaire"
+        },
+        {
+            "Nom": "Coréen",
+            "Niveau": "Débutant"
         }
     ],
     "Formations": [
         {
-            "Nom": "ECE", 
-            "Lieu": "blabla",
-            "Date": "Debut-Fin",
-            "Nom_Diplome": "Diplome 1",
-            "Competences_Acquise": ["C1", "C2"],
-            "Projet_Realise": ["Projet1", "Projet2"]
+            "Nom": "Ajou University",
+            "Lieu": "Suwon, Corée du Sud",
+            "Date": "Sept 2024 - Dec 2024",
+            "Nom_Diplome": "Echange universitaire",
+            "Projet_Realise": [
+                {"Nom_Projet": "Apprentissage du coréen", "Description": []},
+                {"Nom_Projet": "Cours sur les IA et les NLP", "Description": []}
+            ]
+        },
+        {
+            "Nom": "E.C.E École d’ingénieur", 
+            "Lieu": "Paris, France",
+            "Date": "Depuis Septembre 2022",
+            "Nom_Diplome": "Diplôme d’ingénieur",
+            "Projet_Realise": [
+                {"Nom_Projet": "Projets informatiques en C", "Description": ["Programmation du jeu du labyrinthe", "Création d’un jeu vidéo, avec mini jeux", "Optimisation d’une ligne d’assemblag"]},
+                {"Nom_Projet": "Projet informatique en PHP", "Description": ["Création d’un site internet de type réseau social", "Création du site internet d’une association"]},
+                {"Nom_Projet": "Projet informatique en Java" , "Description": ["Création d’une application similaire a une boutique de vêtement en local permettant la connexion pour les clients et les admins"]},
+                {"Nom_Projet": "Projet informatique en JavaScript", "Description": ["Création d'un site web pour le programmation cinéma d'une associtation de l'école"]}
+            ]
+        },
+        {
+            "Nom": "Lycée Evariste Galois",
+            "Lieu": "Sartrouville, France",
+            "Date": "Septembre 2019 - Juillet 2022",
+            "Nom_Diplome": "Bac Général Mathématiques Informatique et Physique-Chimie",
+            "Projet_Realise": [
+                {"Nom_Projet": "Projets informatiques en python", "Description": ["Création d'un site internet avec Flask, lié à une BDD", "Programmation d'un tetris"]}
+            ]
         }
     ],
     "Experiences": [
         {
-            "Lieu": "Adress",
-            "Date": "Debut-Fin",
-            "Titre": "Stage 1",
-            "Missions": ["Mission 1", "Mission 2"]
+            "Lieu": "Montesson, France",
+            "Date": "Depuis Aout 2025",
+            "Titre": "Manager chez McDonald's",
+            "Missions": ["Préparation du Service", "Management des équipes", "Gestions des litiges clients"]
+        },
+        {
+            "Lieu": "Montesson, France",
+            "Date": "Mai 2024 - Aout 2025",
+            "Titre": "Equipier polyvalent chez McDonald's",
+            "Missions": ["Préparation des commandes", "Fermeture du restaurant"]
+        },
+        {
+            "Lieu": "Croissy sur Seine, France",
+            "Date": "Janvier",
+            "Titre": "Stage d'observation chez CPI software",
+            "Missions": ["Programmation en React", "Recettage des mises à jour"]
+        },
+        {
+            "Lieu": "Paris, France",
+            "Date": "Octobre 2022 - Mai 2023",
+            "Titre": "Bénévolat au sein de l'association COP1",
+            "Missions": ["Transport de denrées alimentaires", "Distribution de colis alimentaire"]
         }
     ]
 }

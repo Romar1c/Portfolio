@@ -3,7 +3,7 @@ export function Footer() {
 
   return (
     <footer>
-      <div>
+      <div className="flex justify-center items-center h-16 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-indigo-50">
         <p>
           © {year} Romaric BARBAUD
         </p>
