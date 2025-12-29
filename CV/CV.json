@@ -1,0 +1,39 @@
+{
+    "Nom": "BARBAUD",
+    "Prenom": "Romaric",
+    "Mail": "romaric.barbaud@gmail.com",
+    "Numero": "0760102004",
+    "Adress": "Rue du Temple, Sartrouville 78500",
+    "Intro": "Bla Bla Bla",
+    "Competences": ["Esprit d’équipe", "Capacité d’adaptation", "Curieux", "Ouvert d’esprit", "Autonome", "Ponctuel"],
+    "Langages_Technique": [],
+    "Outils_Technique": [],
+    "Langues": [
+        {
+            "Nom": "Anglais", 
+            "Niveau": "TOEIC: 825"
+        },
+        {
+            "Nom": "Anglais", 
+            "Niveau": "TOEIC: 825"
+        }
+    ],
+    "Formations": [
+        {
+            "Nom": "ECE", 
+            "Lieu": "blabla",
+            "Date": "Debut-Fin",
+            "Nom_Diplome": "Diplome 1",
+            "Competences_Acquise": ["C1", "C2"],
+            "Projet_Realise": ["Projet1", "Projet2"]
+        }
+    ],
+    "Experiences": [
+        {
+            "Lieu": "Adress",
+            "Date": "Debut-Fin",
+            "Titre": "Stage 1",
+            "Missions": ["Mission 1", "Mission 2"]
+        }
+    ]
+}
