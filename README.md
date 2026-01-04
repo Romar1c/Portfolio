@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Next.js + Supabase
 
-## Getting Started
+Ce projet est un portfolio personnel construit avec Next.js (App Router) et Supabase. Il expose :
+- Un CV détaillé à la racine `/`.
+- Une liste de projets issus de la table Supabase `projects` sur `/projects` avec pages détaillées `/projects/[slug]`.
+- Une navigation commune (Navbar) et un footer.
 
-First, run the development server:
+## Prérequis
+
+- Node.js 18+
+- npm ou pnpm
+- Un projet Supabase avec une table `projects`.
+- Variables d’environnement Supabase (URL et clé anon) dans `.env`
+
+## Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Configuration de Supabase
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Créer un fichier `.env` avec les mêmes informations que celles presentes dans le fichier `.env.example`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Schéma minimal de la table `projects`
 
-## Learn More
+Table : `projects`
 
-To learn more about Next.js, take a look at the following resources:
+| Colonne      | Type        | Notes                                 |
+|--------------|-------------|---------------------------------------|
+| id           | uuid        | primary key (ou bigint)               |
+| title        | text        | requis                                |
+| slug         | text        | requis, unique                        |
+| summary      | text        | optionnel                             |
+| description  | text        | optionnel                             |
+| content      | text        | optionnel (détails longs)             |
+| tags         | text[]      | optionnel (peut être text)            |
+| github_url   | text        | optionnel                             |
+| live_url     | text        | optionnel                             |
+| cover_url    | text        | optionnel                             |
+| created_at   | timestamptz | défaut `now()`                        |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev` : lance le serveur de dev Next.js.
+- `npm run build` : build de production.
 
-## Deploy on Vercel
+## Fonctionnement des pages
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/` : lit `CV.json`, utilise des composants, affiche formations, expériences, langues, etc.
+- `/projects` : rendu avec `ProjectList`.
+- `/projects/[slug]` : fetch du projet par `slug`, 404 via `notFound()` si absent, rendu avec `ProjectDetail`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Composants clés
+
+- `Navbar` : liens CV (`/`) et Projets (`/projects`), état actif selon la route.
+- `ProjectList` / `ProjectCard` : grille de projets avec résumé et tags.
+- `ProjectDetail` : titre, dates, tags, liens code/démo, contenu détaillé.
+- `ProjectTags` : normalise `tags` (array ou string) et affiche via `PillList`.
+- `Section` : wrapper visuel commun.
+
+## Développement
+
+1) Copier `.env.example` vers `.env` et renseigner les clés Supabase.
+2) Lancer `npm run dev`.
+3) Remplir la table `projects` dans Supabase.
+4) Visiter `/projects` et `/projects/<slug>` pour vérifier.
+
+## Tests rapides
+
+- Vérifier visuellement `/` et `/projects` en dev.
+- Tester un slug inexistant : doit retourner une 404 via `notFound()`.
