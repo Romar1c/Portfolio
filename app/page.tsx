@@ -15,7 +15,6 @@ export default function Home() {
     { label: "Téléphone", value: data.Numero, href: `tel:${data.Numero}` },
     { label: "Adresse", value: data.Adress },
   ];
-  const info = `${data.Intro}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">

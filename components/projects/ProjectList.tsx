@@ -9,7 +9,7 @@ export function ProjectList({ projects }: ProjectListProps) {
   if (!projects || projects.length === 0) {
     return (
       <p className="rounded-xl border border-white/10 bg-white/5 px-4 py-6 text-center text-sm text-indigo-100/80">
-        Aucun projet n'est disponible pour le moment.
+        Aucun projet n&apos;est disponible pour le moment.
       </p>
     );
   }
