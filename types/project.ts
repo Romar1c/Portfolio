@@ -37,3 +37,17 @@ export type CVData = {
   Formations: Formation[];
   Experiences: Experience[];
 };
+
+export type SupabaseProject = {
+  id: string | number;
+  title: string;
+  slug: string;
+  summary?: string | null;
+  description?: string | null;
+  content?: string | null;
+  tags?: string[] | string | null;
+  github_url?: string | null;
+  live_url?: string | null;
+  cover_url?: string | null;
+  created_at?: string | null;
+};
