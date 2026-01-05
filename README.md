@@ -12,6 +12,7 @@ Ce projet est un portfolio personnel construit avec Next.js et Supabase. Il expo
 - npm ou pnpm
 - Un projet Supabase avec une table `projects`.
 - Variables d’environnement Supabase (URL et clé anon) dans `.env`
+- Un mot de passe admin pour l’ajout de projets : `PROJECT_ADMIN_PASSWORD`
 
 ## Installation
 
@@ -52,6 +53,7 @@ Table : `projects`
 - `/cv` : lit `CV.json`, utilise des composants, affiche formations, expériences, langues, etc.
 - `/projects` : rendu avec `ProjectList`.
 - `/projects/[slug]` : fetch du projet par `slug`, 404 via `notFound()` si absent, rendu avec `ProjectDetail`.
+- `/ajout_projet` : formulaire d’ajout de projet (protégé par mot de passe).
 
 ## Composants clés
 

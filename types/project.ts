@@ -38,16 +38,24 @@ export type CVData = {
   Experiences: Experience[];
 };
 
+export type ProjectContext = "Cours" | "Pro" | "Perso";
+
 export type SupabaseProject = {
-  id: string | number;
-  title: string;
+  id: string;
   slug: string;
-  summary?: string | null;
-  description?: string | null;
-  content?: string | null;
-  tags?: string[] | string | null;
-  github_url?: string | null;
-  live_url?: string | null;
-  cover_url?: string | null;
-  created_at?: string | null;
+  name: string;
+  language: string;
+  summary: string;
+  context: ProjectContext;
+
+  image_url: string | null;
+  image_caption: string | null;
+
+  github_url: string | null;
+  live_url: string | null;
+
+  end_date: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 };
+
