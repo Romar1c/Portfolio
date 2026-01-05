@@ -1,7 +1,8 @@
 # Portfolio Next.js + Supabase
 
-Ce projet est un portfolio personnel construit avec Next.js (App Router) et Supabase. Il expose :
-- Un CV détaillé à la racine `/`.
+Ce projet est un portfolio personnel construit avec Next.js et Supabase. Il expose :
+- Une page d’accueil de présentation.
+- Un CV détaillé sur `/cv`.
 - Une liste de projets issus de la table Supabase `projects` sur `/projects` avec pages détaillées `/projects/[slug]`.
 - Une navigation commune (Navbar) et un footer.
 
@@ -47,7 +48,8 @@ Table : `projects`
 
 ## Fonctionnement des pages
 
-- `/` : lit `CV.json`, utilise des composants, affiche formations, expériences, langues, etc.
+- `/` : page d’accueil orientée présentation rapide et CTA vers le CV et les projets.
+- `/cv` : lit `CV.json`, utilise des composants, affiche formations, expériences, langues, etc.
 - `/projects` : rendu avec `ProjectList`.
 - `/projects/[slug]` : fetch du projet par `slug`, 404 via `notFound()` si absent, rendu avec `ProjectDetail`.
 
