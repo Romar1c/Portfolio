@@ -4,24 +4,33 @@ import { createSupabaseServer } from "@/lib/supabase/server";
 
 const unauthorized = NextResponse.json({ error: "Non autorisé." }, { status: 401 });
 
+type ProjectContext = "Cours" | "Pro" | "Perso";
+
 type ProjectPayload = {
-  title?: string;
+  name?: string;
   slug?: string;
+  language?: string;
   summary?: string;
-  description?: string;
-  github_url?: string;
-  live_url?: string;
-  tags?: string | string[];
+  context?: ProjectContext;
+
+  image_url?: string | null;
+  image_caption?: string | null;
+
+  github_url?: string | null;
+  live_url?: string | null;
+
+  end_date?: string | null;
 };
 
-const slugify = (value: string) =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+
+const cleanNullable = (v: unknown) => {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t.length > 0 ? t : null;
+};
+
+const isValidContext = (v: any): v is ProjectContext =>
+  v === "Cours" || v === "Pro" || v === "Perso";
 
 export async function POST(request: Request) {
   const cookieStore = await cookies();
@@ -29,49 +38,59 @@ export async function POST(request: Request) {
   if (!unlocked) return unauthorized;
 
   const body = (await request.json().catch(() => ({}))) as ProjectPayload;
-  const title = body.title?.trim();
-  if (!title) {
-    return NextResponse.json(
-      { error: "Le titre est obligatoire." },
-      { status: 400 },
-    );
+
+  const name = body.name?.trim();
+  const language = body.language?.trim();
+  const summary = body.summary?.trim();
+
+  if (!name) {
+    return NextResponse.json({ error: "Le nom du projet est obligatoire." }, { status: 400 });
+  }
+  if (!language) {
+    return NextResponse.json({ error: "Le champ langage/stack est obligatoire." }, { status: 400 });
+  }
+  if (!summary) {
+    return NextResponse.json({ error: "Le résumé est obligatoire." }, { status: 400 });
   }
 
-  const slug =
-    body.slug?.trim() && body.slug.trim().length > 0
-      ? slugify(body.slug)
-      : slugify(title);
+  const slug = body.slug?.trim();
 
-  const tags = Array.isArray(body.tags)
-    ? body.tags
-    : typeof body.tags === "string"
-      ? body.tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean)
-      : [];
+  if (!slug) {
+    return NextResponse.json({ error: "Impossible de générer le slug." }, { status: 400 });
+  }
+
+  const context: ProjectContext = isValidContext(body.context) ? body.context : "Perso";
+
+  const end_date = cleanNullable(body.end_date);
 
   const supabase = await createSupabaseServer();
   const { data, error } = await supabase
     .from("projects")
     .insert({
-      title,
+      name,
       slug,
-      summary: body.summary ?? null,
-      description: body.description ?? null,
-      github_url: body.github_url ?? null,
-      live_url: body.live_url ?? null,
-      tags: tags.length > 0 ? tags : null,
+      language,
+      summary,
+      context,
+
+      image_url: cleanNullable(body.image_url),
+      image_caption: cleanNullable(body.image_caption),
+
+      github_url: cleanNullable(body.github_url),
+      live_url: cleanNullable(body.live_url),
+
+      end_date: end_date,
     })
     .select()
     .single();
 
   if (error) {
+    if ((error as any).code === "23505") {
+      return NextResponse.json({ error: "Ce slug existe déjà." }, { status: 409 });
+    }
+
     console.error("Insertion projet :", error.message);
-    return NextResponse.json(
-      { error: "Impossible d'ajouter le projet." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Impossible d'ajouter le projet." }, { status: 500 });
   }
 
   return NextResponse.json({ data });

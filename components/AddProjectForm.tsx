@@ -6,24 +6,32 @@ type AddProjectFormProps = {
   unlocked: boolean;
 };
 
+type ProjectContext = "Cours" | "Pro" | "Perso";
+
 type FormState = {
-  title: string;
+  name: string;
   slug: string;
+  language: string;
   summary: string;
-  description: string;
+  context: ProjectContext;
+  image_url: string;
+  image_caption: string;
   github_url: string;
   live_url: string;
-  tags: string;
+  end_date: string;
 };
 
 const initialForm: FormState = {
-  title: "",
+  name: "",
   slug: "",
+  language: "",
   summary: "",
-  description: "",
+  context: "Perso",
+  image_url: "",
+  image_caption: "",
   github_url: "",
   live_url: "",
-  tags: "",
+  end_date: "",
 };
 
 export function AddProjectForm({ unlocked: initialUnlocked }: AddProjectFormProps) {
@@ -59,7 +67,7 @@ export function AddProjectForm({ unlocked: initialUnlocked }: AddProjectFormProp
   };
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -71,10 +79,19 @@ export function AddProjectForm({ unlocked: initialUnlocked }: AddProjectFormProp
     setMessage(null);
     setError(null);
 
+    const payload = {
+      ...form,
+      image_url: form.image_url.trim() ? form.image_url.trim() : null,
+      image_caption: form.image_caption.trim() ? form.image_caption.trim() : null,
+      github_url: form.github_url.trim() ? form.github_url.trim() : null,
+      live_url: form.live_url.trim() ? form.live_url.trim() : null,
+      end_date: form.end_date.trim() ? form.end_date.trim() : null,
+    };
+
     const res = await fetch("/api/projects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(payload),
     });
 
     setSubmitting(false);
@@ -84,9 +101,7 @@ export function AddProjectForm({ unlocked: initialUnlocked }: AddProjectFormProp
       setForm(initialForm);
     } else {
       setError(data?.error ?? "Impossible d'ajouter le projet.");
-      if (res.status === 401) {
-        setUnlocked(false);
-      }
+      if (res.status === 401) setUnlocked(false);
     }
   };
 
@@ -98,12 +113,11 @@ export function AddProjectForm({ unlocked: initialUnlocked }: AddProjectFormProp
             onSubmit={handleUnlock}
             className="w-full max-w-md space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-indigo-500/20"
           >
-            <h2 className="text-xl font-semibold text-white">
-              Accès restreint
-            </h2>
+            <h2 className="text-xl font-semibold text-white">Accès restreint</h2>
             <p className="text-sm text-indigo-100/80">
               Entrez le mot de passe pour ajouter un projet.
             </p>
+
             <input
               type="password"
               name="password"
@@ -114,9 +128,9 @@ export function AddProjectForm({ unlocked: initialUnlocked }: AddProjectFormProp
               required
               minLength={4}
             />
-            {unlockError && (
-              <p className="text-sm text-red-300">{unlockError}</p>
-            )}
+
+            {unlockError && <p className="text-sm text-red-300">{unlockError}</p>}
+
             <button
               type="submit"
               className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-70"
@@ -134,64 +148,117 @@ export function AddProjectForm({ unlocked: initialUnlocked }: AddProjectFormProp
       >
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <label className="text-sm text-indigo-100/90" htmlFor="title">
-              Titre *
+            <label className="text-sm text-indigo-100/90" htmlFor="name">
+              Nom du projet *
             </label>
             <input
-              id="title"
-              name="title"
+              id="name"
+              name="name"
               required
-              value={form.title}
+              value={form.name}
               onChange={handleChange}
               className="w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-white outline-none focus:border-indigo-400"
               placeholder="Ex: Dashboard sécurité"
             />
           </div>
+
           <div className="space-y-2">
             <label className="text-sm text-indigo-100/90" htmlFor="slug">
-              Slug
+              Slug *
             </label>
             <input
               id="slug"
               name="slug"
+              required
               value={form.slug}
               onChange={handleChange}
               className="w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-white outline-none focus:border-indigo-400"
               placeholder="Ex: dashboard-securite"
             />
             <p className="text-xs text-indigo-100/60">
-              Si vide, le slug sera généré depuis le titre.
+              Format conseillé : minuscules, tirets, pas d’accents.
             </p>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <label className="text-sm text-indigo-100/90" htmlFor="language">
+              Langage / Stack *
+            </label>
+            <input
+              id="language"
+              name="language"
+              required
+              value={form.language}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-white outline-none focus:border-indigo-400"
+              placeholder="Ex: Next.js / TypeScript / Supabase"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm text-indigo-100/90" htmlFor="context">
+              Contexte *
+            </label>
+            <select
+              id="context"
+              name="context"
+              value={form.context}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-white outline-none focus:border-indigo-400"
+            >
+              <option value="Cours">Cours</option>
+              <option value="Pro">Pro</option>
+              <option value="Perso">Perso</option>
+            </select>
           </div>
         </div>
 
         <div className="space-y-2">
           <label className="text-sm text-indigo-100/90" htmlFor="summary">
-            Résumé
+            Résumé *
           </label>
-          <input
+          <textarea
             id="summary"
             name="summary"
+            required
             value={form.summary}
             onChange={handleChange}
+            rows={4}
             className="w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-white outline-none focus:border-indigo-400"
-            placeholder="Quelques lignes de résumé"
+            placeholder="Quelques lignes de résumé..."
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm text-indigo-100/90" htmlFor="description">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            rows={5}
-            className="w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-white outline-none focus:border-indigo-400"
-            placeholder="Détails du projet..."
-          />
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <label className="text-sm text-indigo-100/90" htmlFor="image_url">
+              Image (URL)
+            </label>
+            <input
+              id="image_url"
+              name="image_url"
+              value={form.image_url}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-white outline-none focus:border-indigo-400"
+              placeholder="URL Supabase bucket"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm text-indigo-100/90" htmlFor="image_caption">
+              Texte sous l’image
+            </label>
+            <input
+              id="image_caption"
+              name="image_caption"
+              value={form.image_caption}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-white outline-none focus:border-indigo-400"
+              placeholder="Ex: Page d’accueil du projet"
+            />
+          </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -208,9 +275,10 @@ export function AddProjectForm({ unlocked: initialUnlocked }: AddProjectFormProp
               placeholder="https://github.com/..."
             />
           </div>
+
           <div className="space-y-2">
             <label className="text-sm text-indigo-100/90" htmlFor="live_url">
-              Lien démo
+              Lien du site / démo
             </label>
             <input
               id="live_url"
@@ -224,16 +292,16 @@ export function AddProjectForm({ unlocked: initialUnlocked }: AddProjectFormProp
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm text-indigo-100/90" htmlFor="tags">
-            Tags (séparés par des virgules)
+          <label className="text-sm text-indigo-100/90" htmlFor="end_date">
+            Date de fin (vide = en cours)
           </label>
           <input
-            id="tags"
-            name="tags"
-            value={form.tags}
+            id="end_date"
+            name="end_date"
+            type="date"
+            value={form.end_date}
             onChange={handleChange}
             className="w-full rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-white outline-none focus:border-indigo-400"
-            placeholder="cyber, react, réseau"
           />
         </div>
 
