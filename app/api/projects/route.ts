@@ -11,26 +11,41 @@ type ProjectPayload = {
   slug?: string;
   language?: string;
   summary?: string;
-  context?: ProjectContext;
+  context?: unknown;
 
-  image_url?: string | null;
-  image_caption?: string | null;
+  image_url?: unknown;
+  image_caption?: unknown;
 
-  github_url?: string | null;
-  live_url?: string | null;
+  github_url?: unknown;
+  live_url?: unknown;
 
-  end_date?: string | null;
+  end_date?: unknown; 
 };
 
+const slugify = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
-const cleanNullable = (v: unknown) => {
+const cleanNullableString = (v: unknown): string | null => {
   if (typeof v !== "string") return null;
   const t = v.trim();
   return t.length > 0 ? t : null;
 };
 
-const isValidContext = (v: any): v is ProjectContext =>
+const isProjectContext = (v: unknown): v is ProjectContext =>
   v === "Cours" || v === "Pro" || v === "Perso";
+
+const getPostgresErrorCode = (err: unknown): string | null => {
+  if (typeof err !== "object" || err === null) return null;
+  if (!("code" in err)) return null;
+  const code = (err as { code?: unknown }).code;
+  return typeof code === "string" ? code : null;
+};
 
 export async function POST(request: Request) {
   const cookieStore = await cookies();
@@ -53,15 +68,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Le résumé est obligatoire." }, { status: 400 });
   }
 
-  const slug = body.slug?.trim();
-
+  const slugRaw = body.slug?.trim();
+  if (!slugRaw) {
+    return NextResponse.json({ error: "Le slug est obligatoire." }, { status: 400 });
+  }
+  const slug = slugify(slugRaw);
   if (!slug) {
-    return NextResponse.json({ error: "Impossible de générer le slug." }, { status: 400 });
+    return NextResponse.json({ error: "Slug invalide." }, { status: 400 });
   }
 
-  const context: ProjectContext = isValidContext(body.context) ? body.context : "Perso";
-
-  const end_date = cleanNullable(body.end_date);
+  const context: ProjectContext = isProjectContext(body.context) ? body.context : "Perso";
 
   const supabase = await createSupabaseServer();
   const { data, error } = await supabase
@@ -73,19 +89,19 @@ export async function POST(request: Request) {
       summary,
       context,
 
-      image_url: cleanNullable(body.image_url),
-      image_caption: cleanNullable(body.image_caption),
+      image_url: cleanNullableString(body.image_url),
+      image_caption: cleanNullableString(body.image_caption),
 
-      github_url: cleanNullable(body.github_url),
-      live_url: cleanNullable(body.live_url),
+      github_url: cleanNullableString(body.github_url),
+      live_url: cleanNullableString(body.live_url),
 
-      end_date: end_date,
+      end_date: cleanNullableString(body.end_date),
     })
     .select()
     .single();
 
   if (error) {
-    if ((error as any).code === "23505") {
+    if (getPostgresErrorCode(error) === "23505") {
       return NextResponse.json({ error: "Ce slug existe déjà." }, { status: 409 });
     }
 
