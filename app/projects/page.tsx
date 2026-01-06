@@ -10,7 +10,7 @@ async function fetchProjects(): Promise<SupabaseProject[]> {
   const { data, error } = await supabase
     .from("projects")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("end_date", { ascending: false });
 
   if (error) {
     console.error("Error fetching projects:", error.message);
